@@ -284,42 +284,92 @@ const ProductDetailPage = () => {
             {/* Phone Specifications */}
             {(product.ram || product.storage || product.screen_size || product.color || product.battery_capacity || product.battery_watt) && (
               <div className="border-t pt-6">
-                <h3 className="font-semibold text-gray-800 mb-4">Phone Specifications</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {product.ram && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">RAM:</span>
-                      <span className="font-medium text-gray-800">{product.ram}</span>
+                <h3 className="font-semibold text-gray-800 mb-6 text-xl">📱 Phone Specifications</h3>
+                <div className="bg-gray-50 rounded-lg p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Performance & Storage */}
+                    <div className="space-y-4">
+                      <h4 className="font-medium text-gray-700 text-sm uppercase tracking-wide mb-3">Performance & Storage</h4>
+                      {product.ram && (
+                        <div className="flex items-center justify-between py-2 border-b border-gray-200">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                              <span className="text-blue-600 text-xs font-bold">RAM</span>
+                            </div>
+                            <span className="text-gray-600 font-medium">Memory</span>
+                          </div>
+                          <span className="font-semibold text-gray-800 bg-blue-50 px-3 py-1 rounded-full text-sm">{product.ram}</span>
+                        </div>
+                      )}
+                      {product.storage && (
+                        <div className="flex items-center justify-between py-2 border-b border-gray-200">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                              <span className="text-green-600 text-xs font-bold">SSD</span>
+                            </div>
+                            <span className="text-gray-600 font-medium">Storage</span>
+                          </div>
+                          <span className="font-semibold text-gray-800 bg-green-50 px-3 py-1 rounded-full text-sm">{product.storage}</span>
+                        </div>
+                      )}
                     </div>
-                  )}
-                  {product.storage && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Storage:</span>
-                      <span className="font-medium text-gray-800">{product.storage}</span>
+
+                    {/* Display & Design */}
+                    <div className="space-y-4">
+                      <h4 className="font-medium text-gray-700 text-sm uppercase tracking-wide mb-3">Display & Design</h4>
+                      {product.screen_size && (
+                        <div className="flex items-center justify-between py-2 border-b border-gray-200">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                              <span className="text-purple-600 text-xs font-bold">📱</span>
+                            </div>
+                            <span className="text-gray-600 font-medium">Screen Size</span>
+                          </div>
+                          <span className="font-semibold text-gray-800 bg-purple-50 px-3 py-1 rounded-full text-sm">{product.screen_size}</span>
+                        </div>
+                      )}
+                      {product.color && (
+                        <div className="flex items-center justify-between py-2 border-b border-gray-200">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center">
+                              <span className="text-pink-600 text-xs font-bold">🎨</span>
+                            </div>
+                            <span className="text-gray-600 font-medium">Color</span>
+                          </div>
+                          <span className="font-semibold text-gray-800 bg-pink-50 px-3 py-1 rounded-full text-sm">{product.color}</span>
+                        </div>
+                      )}
                     </div>
-                  )}
-                  {product.screen_size && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Screen Size:</span>
-                      <span className="font-medium text-gray-800">{product.screen_size}</span>
-                    </div>
-                  )}
-                  {product.color && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Color:</span>
-                      <span className="font-medium text-gray-800">{product.color}</span>
-                    </div>
-                  )}
-                  {product.battery_capacity && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Battery Capacity:</span>
-                      <span className="font-medium text-gray-800">{product.battery_capacity}</span>
-                    </div>
-                  )}
-                  {product.battery_watt && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Battery Watt:</span>
-                      <span className="font-medium text-gray-800">{product.battery_watt}</span>
+                  </div>
+
+                  {/* Battery Information */}
+                  {(product.battery_capacity || product.battery_watt) && (
+                    <div className="mt-6 pt-6 border-t border-gray-200">
+                      <h4 className="font-medium text-gray-700 text-sm uppercase tracking-wide mb-3">🔋 Battery & Charging</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {product.battery_capacity && (
+                          <div className="flex items-center justify-between py-2">
+                            <div className="flex items-center space-x-3">
+                              <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                                <span className="text-yellow-600 text-xs font-bold">⚡</span>
+                              </div>
+                              <span className="text-gray-600 font-medium">Battery Capacity</span>
+                            </div>
+                            <span className="font-semibold text-gray-800 bg-yellow-50 px-3 py-1 rounded-full text-sm">{product.battery_capacity}</span>
+                          </div>
+                        )}
+                        {product.battery_watt && (
+                          <div className="flex items-center justify-between py-2">
+                            <div className="flex items-center space-x-3">
+                              <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                                <span className="text-orange-600 text-xs font-bold">⚡</span>
+                              </div>
+                              <span className="text-gray-600 font-medium">Fast Charging</span>
+                            </div>
+                            <span className="font-semibold text-gray-800 bg-orange-50 px-3 py-1 rounded-full text-sm">{product.battery_watt}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
