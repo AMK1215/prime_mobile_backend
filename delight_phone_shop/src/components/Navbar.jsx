@@ -146,15 +146,15 @@ const Navbar = ({ onToggleSidebar, isSidebarOpen }) => {
 
 
             {/* Wishlist */}
-            <button className="relative p-2 sm:p-2.5 text-yellow-400 hover:text-yellow-300 hover:bg-gray-800 rounded-lg transition-all duration-200 border border-yellow-500/30">
+            {/* <button className="relative p-2 sm:p-2.5 text-yellow-400 hover:text-yellow-300 hover:bg-gray-800 rounded-lg transition-all duration-200 border border-yellow-500/30">
               <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center font-medium">
                 0
               </span>
-            </button>
+            </button> */}
 
             {/* Shopping Cart */}
-            <Link
+            {/* <Link
               to="/cart"
               className="relative p-2 sm:p-2.5 text-yellow-400 hover:text-yellow-300 hover:bg-gray-800 rounded-lg transition-all duration-200 border border-yellow-500/30"
               aria-label="Shopping Cart"
@@ -163,7 +163,7 @@ const Navbar = ({ onToggleSidebar, isSidebarOpen }) => {
               <span className="absolute -top-1 -right-1 bg-yellow-500 text-gray-900 text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center font-medium">
                 0
               </span>
-            </Link>
+            </Link> */}
 
             {/* Mobile Menu Button */}
             <button

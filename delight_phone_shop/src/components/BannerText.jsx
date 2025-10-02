@@ -144,7 +144,7 @@ const BannerText = () => {
                   </span>
                 </div>
               </div>
-              <p className="text-gray-300 text-sm mt-1">ကြိုး</p>
+              {/* <p className="text-gray-300 text-sm mt-1">ကြိုး</p> */}
             </div>
           </div>
         </div>

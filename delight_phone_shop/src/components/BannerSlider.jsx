@@ -31,14 +31,14 @@ const BannerSlider = () => {
     
     // If img_url is a relative path, construct full URL
     if (banner.img_url) {
-      const fullUrl = `http://localhost:8000${banner.img_url}`;
+      const fullUrl = `https://moneyking77.online${banner.img_url}`;
       console.log('Constructed URL from img_url:', fullUrl);
       return fullUrl;
     }
     
     // If only image filename is provided, construct URL
     if (banner.image) {
-      const fullUrl = `http://localhost:8000/assets/img/banners/${banner.image}`;
+      const fullUrl = `https://moneyking77.online/assets/img/banners/${banner.image}`;
       console.log('Constructed URL from image:', fullUrl);
       return fullUrl;
     }
@@ -200,21 +200,21 @@ const BannerSlider = () => {
                 <div className="container-custom">
                   <div className="max-w-3xl">
                     {/* Gaming Badge */}
-                    <div className="inline-flex items-center space-x-2 bg-gold-500/20 backdrop-blur-sm border border-gold-500/30 text-gold-400 px-4 py-2 rounded-full text-sm font-semibold mb-6 animate-fade-in">
+                    {/* <div className="inline-flex items-center space-x-2 bg-gold-500/20 backdrop-blur-sm border border-gold-500/30 text-gold-400 px-4 py-2 rounded-full text-sm font-semibold mb-6 animate-fade-in">
                       <Crown className="w-4 h-4" />
                       <span>Premium Collection</span>
-                    </div>
+                    </div> */}
 
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight animate-slide-up font-gaming neon-text">
+                    {/* <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight animate-slide-up font-gaming neon-text">
                       {banner.title || 'PhoneShop - Premium Mobile Store'}
-                    </h1>
+                    </h1> */}
                     
-                    <p className="text-lg md:text-xl text-gold-200 mb-8 leading-relaxed max-w-2xl animate-slide-up">
+                    {/* <p className="text-lg md:text-xl text-gold-200 mb-8 leading-relaxed max-w-2xl animate-slide-up">
                       {banner.subtitle || 'Your trusted mobile phone store - Discover the latest smartphones and accessories at unbeatable prices'}
-                    </p>
+                    </p> */}
 
 
-                    <div className="flex flex-col sm:flex-row gap-4 animate-slide-up">
+                    {/* <div className="flex flex-col sm:flex-row gap-4 animate-slide-up">
                       <a
                         href={banner.buttonLink || '/products'}
                         className="btn btn-primary btn-lg px-8 py-4 text-lg font-semibold shadow-gaming hover:shadow-gaming-lg transform hover:-translate-y-0.5 transition-all duration-300"
@@ -228,7 +228,7 @@ const BannerSlider = () => {
                       >
                         Browse Categories
                       </a>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
