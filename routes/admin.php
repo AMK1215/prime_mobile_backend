@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\PromotionController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
@@ -55,5 +56,12 @@ Route::group([
     Route::resource('promotions', PromotionController::class);
     Route::resource('contact', ContactController::class);
     Route::resource('bank', BankController::class);
+
+    // Reports & Analytics
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/', [ReportController::class, 'index'])->name('index');
+        Route::get('/sales', [ReportController::class, 'sales'])->name('sales');
+        Route::get('/export-sales', [ReportController::class, 'exportSales'])->name('export-sales');
+    });
 
 });

@@ -155,6 +155,15 @@
                             </ul>
                         </li>
 
+                        <!-- Reports & Analytics -->
+                        <li class="nav-item">
+                            <a href="{{ route('admin.reports.index') }}"
+                                class="nav-link {{ str_contains(Route::current()->getName(), 'admin.reports') ? 'active' : '' }}">
+                                <i class="fas fa-chart-line"></i>
+                                <p>Reports & Analytics</p>
+                            </a>
+                        </li>
+
                         <!-- General Settings -->
                         <li class="nav-item">
                             <a href="#" class="nav-link">
