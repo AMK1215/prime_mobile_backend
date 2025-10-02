@@ -138,6 +138,59 @@
                                         <h5>Description</h5>
                                         <p class="text-muted">{{ $product->description }}</p>
                                     </div>
+
+                                    <!-- Phone Information -->
+                                    @if($product->ram || $product->storage || $product->screen_size || $product->color || $product->battery_capacity || $product->battery_watt)
+                                    <div class="mt-4">
+                                        <h5>Phone Specifications</h5>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <table class="table table-borderless">
+                                                    @if($product->ram)
+                                                    <tr>
+                                                        <td><strong>RAM:</strong></td>
+                                                        <td>{{ $product->ram }}</td>
+                                                    </tr>
+                                                    @endif
+                                                    @if($product->storage)
+                                                    <tr>
+                                                        <td><strong>Storage:</strong></td>
+                                                        <td>{{ $product->storage }}</td>
+                                                    </tr>
+                                                    @endif
+                                                    @if($product->screen_size)
+                                                    <tr>
+                                                        <td><strong>Screen Size:</strong></td>
+                                                        <td>{{ $product->screen_size }}</td>
+                                                    </tr>
+                                                    @endif
+                                                </table>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <table class="table table-borderless">
+                                                    @if($product->color)
+                                                    <tr>
+                                                        <td><strong>Color:</strong></td>
+                                                        <td>{{ $product->color }}</td>
+                                                    </tr>
+                                                    @endif
+                                                    @if($product->battery_capacity)
+                                                    <tr>
+                                                        <td><strong>Battery Capacity:</strong></td>
+                                                        <td>{{ $product->battery_capacity }}</td>
+                                                    </tr>
+                                                    @endif
+                                                    @if($product->battery_watt)
+                                                    <tr>
+                                                        <td><strong>Battery Watt:</strong></td>
+                                                        <td>{{ $product->battery_watt }}</td>
+                                                    </tr>
+                                                    @endif
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endif
                                 </div>
                             </div>
 

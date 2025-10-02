@@ -47,6 +47,93 @@
                                             @enderror
                                         </div>
 
+                                        <!-- Phone Information Section -->
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h3 class="card-title">Phone Information</h3>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="ram">RAM</label>
+                                                            <input type="text" 
+                                                                   class="form-control @error('ram') is-invalid @enderror" 
+                                                                   id="ram" name="ram" value="{{ old('ram') }}" 
+                                                                   placeholder="e.g., 8GB, 12GB">
+                                                            @error('ram')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="storage">Storage</label>
+                                                            <input type="text" 
+                                                                   class="form-control @error('storage') is-invalid @enderror" 
+                                                                   id="storage" name="storage" value="{{ old('storage') }}" 
+                                                                   placeholder="e.g., 128GB, 256GB, 512GB">
+                                                            @error('storage')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="screen_size">Screen Size</label>
+                                                            <input type="text" 
+                                                                   class="form-control @error('screen_size') is-invalid @enderror" 
+                                                                   id="screen_size" name="screen_size" value="{{ old('screen_size') }}" 
+                                                                   placeholder="e.g., 6.1 inches, 6.7 inches">
+                                                            @error('screen_size')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="color">Color</label>
+                                                            <input type="text" 
+                                                                   class="form-control @error('color') is-invalid @enderror" 
+                                                                   id="color" name="color" value="{{ old('color') }}" 
+                                                                   placeholder="e.g., Black, White, Blue, Gold">
+                                                            @error('color')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="battery_capacity">Battery Capacity</label>
+                                                            <input type="text" 
+                                                                   class="form-control @error('battery_capacity') is-invalid @enderror" 
+                                                                   id="battery_capacity" name="battery_capacity" value="{{ old('battery_capacity') }}" 
+                                                                   placeholder="e.g., 4000mAh, 5000mAh">
+                                                            @error('battery_capacity')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="battery_watt">Battery Watt</label>
+                                                            <input type="text" 
+                                                                   class="form-control @error('battery_watt') is-invalid @enderror" 
+                                                                   id="battery_watt" name="battery_watt" value="{{ old('battery_watt') }}" 
+                                                                   placeholder="e.g., 25W, 45W, 65W">
+                                                            @error('battery_watt')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">

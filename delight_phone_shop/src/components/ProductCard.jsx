@@ -320,15 +320,15 @@ const ProductCard = ({ product }) => {
           <div className="flex items-center justify-between mb-4 text-xs text-gray-400">
             <div className="flex items-center space-x-1">
               <Battery className="w-4 h-4 text-green-400" />
-              <span>In Stock</span>
+              <span>{product.ram || 'Premium'}</span>
             </div>
             <div className="flex items-center space-x-1">
               <Camera className="w-4 h-4 text-blue-400" />
-              <span>Premium</span>
+              <span>{product.storage || 'High Res'}</span>
             </div>
             <div className="flex items-center space-x-1">
               <Wifi className="w-4 h-4 text-purple-400" />
-              <span>Available</span>
+              <span>{product.screen_size || '5G Ready'}</span>
             </div>
           </div>
 

@@ -281,7 +281,52 @@ const ProductDetailPage = () => {
               </div>
             </div>
 
-            {/* Features */}
+            {/* Phone Specifications */}
+            {(product.ram || product.storage || product.screen_size || product.color || product.battery_capacity || product.battery_watt) && (
+              <div className="border-t pt-6">
+                <h3 className="font-semibold text-gray-800 mb-4">Phone Specifications</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {product.ram && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">RAM:</span>
+                      <span className="font-medium text-gray-800">{product.ram}</span>
+                    </div>
+                  )}
+                  {product.storage && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Storage:</span>
+                      <span className="font-medium text-gray-800">{product.storage}</span>
+                    </div>
+                  )}
+                  {product.screen_size && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Screen Size:</span>
+                      <span className="font-medium text-gray-800">{product.screen_size}</span>
+                    </div>
+                  )}
+                  {product.color && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Color:</span>
+                      <span className="font-medium text-gray-800">{product.color}</span>
+                    </div>
+                  )}
+                  {product.battery_capacity && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Battery Capacity:</span>
+                      <span className="font-medium text-gray-800">{product.battery_capacity}</span>
+                    </div>
+                  )}
+                  {product.battery_watt && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Battery Watt:</span>
+                      <span className="font-medium text-gray-800">{product.battery_watt}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Product Information */}
             <div className="border-t pt-6">
               <h3 className="font-semibold text-gray-800 mb-4">Product Information</h3>
               <ul className="space-y-2 text-gray-600">
