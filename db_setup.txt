@@ -1,0 +1,25 @@
+sudo apt install postgresql postgresql-contrib -y
+sudo systemctl status postgresql
+CREATE DATABASE prime_mobile_db;
+CREATE USER prime_mobile_db_user WITH PASSWORD 'prime_mobile_pwd';
+GRANT ALL PRIVILEGES ON DATABASE prime_mobile_db TO prime_mobile_db_user;
+ALTER USER prime_mobile_db_user WITH PASSWORD 'prime_mobile_pwd';
+
+sudo -i -u postgres
+psql -d prime_mobile_db
+
+psql -h 127.0.0.1 -U prime_mobile_db_user -d prime_mobile_db
+
+GRANT ALL ON SCHEMA public TO prime_mobile_db_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO prime_mobile_db_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO prime_mobile_db_user;
+
+sudo -i -u postgres
+psql -d ponewine_db
+ALTER SCHEMA public OWNER TO prime_mobile_db_user;
+
+sudo chown -R www-data:www-data /var/www/prime_mobile_backend/storage
+sudo chown -R www-data:www-data /var/www/prime_mobile_backend/bootstrap/cache
+
+sudo chmod -R 775 /var/www/prime_mobile_backend/storage
+sudo chmod -R 775 /var/www/prime_mobile_backend/bootstrap/cache
