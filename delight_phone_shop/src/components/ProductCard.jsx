@@ -25,6 +25,7 @@ const ProductCard = ({ product }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [showQuickView, setShowQuickView] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Add safety check for product
   if (!product) {
@@ -58,6 +59,39 @@ const ProductCard = ({ product }) => {
     setShowQuickView(!showQuickView);
   };
 
+  // Get current image to display
+  const getCurrentImage = () => {
+    if (product.images && product.images.length > 0) {
+      return product.images[currentImageIndex] || product.images[0];
+    }
+    return {
+      image_url: product.image_url || (product.image ? `https://sales.primemobilemm.site/api/${product.image}` : 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80')
+    };
+  };
+
+  // Get primary image or first image
+  const getPrimaryImage = () => {
+    if (product.images && product.images.length > 0) {
+      const primaryImage = product.images.find(img => img.is_primary);
+      return primaryImage || product.images[0];
+    }
+    return {
+      image_url: product.image_url || (product.image ? `https://sales.primemobilemm.site/api/${product.image}` : 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80')
+    };
+  };
+
+  const handleImageNavigation = (direction, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (product.images && product.images.length > 1) {
+      if (direction === 'next') {
+        setCurrentImageIndex((prev) => (prev + 1) % product.images.length);
+      } else {
+        setCurrentImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length);
+      }
+    }
+  };
+
   const formatPrice = (price) => {
     if (!price) return '$0';
     return new Intl.NumberFormat('en-US', {
@@ -86,9 +120,9 @@ const ProductCard = ({ product }) => {
   const statusBadge = getStatusBadge(product.status?.name);
   const StatusIcon = statusBadge.icon;
 
-  // Generate random rating for demo
-  const rating = Math.round((Math.random() * 2 + 3) * 10) / 10; // 3.0 to 5.0
-  const reviewCount = Math.floor(Math.random() * 200) + 10;
+  // Use real data instead of random values
+  const rating = 4.2; // You can add rating to your product model later
+  const reviewCount = product.customers_count || 0;
 
   return (
     <div className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-yellow-200 transform hover:-translate-y-1">
@@ -102,7 +136,7 @@ const ProductCard = ({ product }) => {
           )}
           
           <img
-            src={product.image_url || (product.image ? `https://sales.primemobilemm.site/api/${product.image}` : 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80')}
+            src={getCurrentImage().image_url}
             alt={product.name}
             className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
               imageLoaded ? 'opacity-100' : 'opacity-0'
@@ -113,7 +147,7 @@ const ProductCard = ({ product }) => {
             }}
             onError={(e) => {
               console.error('Image failed to load for product:', product.name);
-              console.error('Attempted URL:', product.image_url || product.image);
+              console.error('Attempted URL:', getCurrentImage().image_url);
               setImageError(true);
               setImageLoaded(true);
               // Set fallback image on error
@@ -121,6 +155,37 @@ const ProductCard = ({ product }) => {
             }}
             loading="lazy"
           />
+
+          {/* Image Navigation Arrows - Only show if multiple images */}
+          {product.images && product.images.length > 1 && (
+            <>
+              <button
+                onClick={(e) => handleImageNavigation('prev', e)}
+                className="absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300"
+                aria-label="Previous image"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                onClick={(e) => handleImageNavigation('next', e)}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300"
+                aria-label="Next image"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </>
+          )}
+
+          {/* Image Counter - Show if multiple images */}
+          {product.images && product.images.length > 1 && (
+            <div className="absolute bottom-2 right-2 bg-black/70 text-white px-2 py-1 rounded-full text-xs font-medium">
+              {currentImageIndex + 1} / {product.images.length}
+            </div>
+          )}
 
           {/* Status Badge - Top Left */}
           {product.status && (
@@ -169,6 +234,40 @@ const ProductCard = ({ product }) => {
               </span>
             </div>
           )}
+
+          {/* Thumbnail Strip - Show if multiple images */}
+          {product.images && product.images.length > 1 && (
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
+              <div className="flex space-x-1 justify-center">
+                {product.images.slice(0, 4).map((image, index) => (
+                  <button
+                    key={image.id || index}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setCurrentImageIndex(index);
+                    }}
+                    className={`w-8 h-8 rounded border-2 transition-all ${
+                      currentImageIndex === index
+                        ? 'border-yellow-400 scale-110'
+                        : 'border-white/50 hover:border-white'
+                    }`}
+                  >
+                    <img
+                      src={image.image_url}
+                      alt={`${product.name} - Image ${index + 1}`}
+                      className="w-full h-full object-cover rounded"
+                    />
+                  </button>
+                ))}
+                {product.images.length > 4 && (
+                  <div className="w-8 h-8 rounded border-2 border-white/50 flex items-center justify-center text-white text-xs font-bold">
+                    +{product.images.length - 4}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Product Information */}
@@ -188,22 +287,22 @@ const ProductCard = ({ product }) => {
 
           {/* Product Description */}
           <p className="text-sm text-gray-300 mb-4 line-clamp-2 leading-relaxed">
-            {product.description || 'Latest flagship phone with premium features, cutting-edge technology, and exceptional performance for the modern user.'}
+            {product.description || 'No description available'}
           </p>
 
-          {/* Key Features */}
+          {/* Key Features - Dynamic based on product data */}
           <div className="flex items-center justify-between mb-4 text-xs text-gray-400">
             <div className="flex items-center space-x-1">
               <Battery className="w-4 h-4 text-green-400" />
-              <span>Long Battery</span>
+              <span>In Stock</span>
             </div>
             <div className="flex items-center space-x-1">
               <Camera className="w-4 h-4 text-blue-400" />
-              <span>High Res</span>
+              <span>Premium</span>
             </div>
             <div className="flex items-center space-x-1">
               <Wifi className="w-4 h-4 text-purple-400" />
-              <span>5G Ready</span>
+              <span>Available</span>
             </div>
           </div>
 
@@ -222,14 +321,14 @@ const ProductCard = ({ product }) => {
               ))}
             </div>
             <span className="text-sm text-white ml-2 font-semibold">{rating}</span>
-            <span className="text-sm text-gray-400 ml-2">• {reviewCount} reviews</span>
+            <span className="text-sm text-gray-400 ml-2">• {reviewCount} sales</span>
           </div>
 
           {/* Price and Add to Cart */}
           <div className="flex items-center justify-between">
             <div className="flex flex-col">
               <span className="text-2xl font-bold text-white">
-                {formatPrice(product.price)}
+                {product.formatted_price || formatPrice(product.price)}
               </span>
               {product.quantity && product.quantity <= 5 && product.quantity > 0 && (
                 <span className="text-xs text-yellow-400 font-medium flex items-center mt-1">

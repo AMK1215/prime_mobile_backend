@@ -21,7 +21,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = Product::with(['productCategory', 'productStatus']);
+            $query = Product::with(['productCategory', 'productStatus', 'images']);
 
             // Filter by category if provided
             if ($request->has('category_id') && $request->category_id) {
@@ -82,7 +82,7 @@ class ProductController extends Controller
     public function show($id)
     {
         try {
-            $product = Product::with(['productCategory', 'productStatus'])
+            $product = Product::with(['productCategory', 'productStatus', 'images'])
                 ->find($id);
 
             if (!$product) {
@@ -112,7 +112,7 @@ class ProductController extends Controller
     public function featured()
     {
         try {
-            $featuredProducts = Product::with(['productCategory', 'productStatus'])
+            $featuredProducts = Product::with(['productCategory', 'productStatus', 'images'])
                 ->whereHas('productStatus', function($query) {
                     $query->whereIn('name', ['Best Seller', 'New Arrival', 'On Sale']);
                 })
@@ -140,7 +140,7 @@ class ProductController extends Controller
     public function latest()
     {
         try {
-            $latestProducts = Product::with(['productCategory', 'productStatus'])
+            $latestProducts = Product::with(['productCategory', 'productStatus', 'images'])
                 ->available()
                 ->orderBy('created_at', 'desc')
                 ->limit(6)
@@ -165,7 +165,7 @@ class ProductController extends Controller
     public function bestSellers()
     {
         try {
-            $bestSellers = Product::with(['productCategory', 'productStatus'])
+            $bestSellers = Product::with(['productCategory', 'productStatus', 'images'])
                 ->whereHas('productStatus', function($query) {
                     $query->where('name', 'Best Seller');
                 })
@@ -193,7 +193,7 @@ class ProductController extends Controller
     public function newArrivals()
     {
         try {
-            $newArrivals = Product::with(['productCategory', 'productStatus'])
+            $newArrivals = Product::with(['productCategory', 'productStatus', 'images'])
                 ->whereHas('productStatus', function($query) {
                     $query->where('name', 'New Arrival');
                 })
@@ -231,7 +231,7 @@ class ProductController extends Controller
                 );
             }
 
-            $products = Product::with(['productCategory', 'productStatus'])
+            $products = Product::with(['productCategory', 'productStatus', 'images'])
                 ->where('product_category_id', $categoryId)
                 ->available()
                 ->orderBy('created_at', 'desc')
@@ -261,7 +261,7 @@ class ProductController extends Controller
     public function search(Request $request)
     {
         try {
-            $query = Product::with(['productCategory', 'productStatus']);
+            $query = Product::with(['productCategory', 'productStatus', 'images']);
 
             if ($request->has('q') && $request->q) {
                 $search = $request->q;
