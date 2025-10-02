@@ -9,13 +9,33 @@ const ProductDetailPage = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showGallery, setShowGallery] = useState(false);
 
+  // Helper function to construct proper image URL
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+    
+    // If it's already a full URL, return as is
+    if (imagePath.startsWith('http')) return imagePath;
+    
+    // If it's a relative path, construct full URL
+    if (imagePath.startsWith('/storage/')) {
+      return `https://sales.primemobilemm.site${imagePath}`;
+    }
+    
+    // If it's just a path without leading slash, add the base URL
+    return `https://sales.primemobilemm.site/storage/${imagePath}`;
+  };
+
   // Get current image to display
   const getCurrentImage = () => {
     if (product?.images && product.images.length > 0) {
-      return product.images[currentImageIndex] || product.images[0];
+      const image = product.images[currentImageIndex] || product.images[0];
+      return {
+        ...image,
+        image_url: getImageUrl(image.image_path || image.image_url)
+      };
     }
     return {
-      image_url: product?.image_url || (product?.image ? `https://sales.primemobilemm.site/api/${product.image}` : 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')
+      image_url: getImageUrl(product?.image_url || product?.image)
     };
   };
 
@@ -23,10 +43,14 @@ const ProductDetailPage = () => {
   const getPrimaryImage = () => {
     if (product?.images && product.images.length > 0) {
       const primaryImage = product.images.find(img => img.is_primary);
-      return primaryImage || product.images[0];
+      const image = primaryImage || product.images[0];
+      return {
+        ...image,
+        image_url: getImageUrl(image.image_path || image.image_url)
+      };
     }
     return {
-      image_url: product?.image_url || (product?.image ? `https://sales.primemobilemm.site/api/${product.image}` : 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')
+      image_url: getImageUrl(product?.image_url || product?.image)
     };
   };
 
@@ -153,7 +177,7 @@ const ProductDetailPage = () => {
                     }`}
                   >
                     <img
-                      src={image.image_url}
+                      src={getImageUrl(image.image_path || image.image_url)}
                       alt={`${product.name} - Image ${index + 1}`}
                       className="w-full h-full object-cover rounded-lg"
                     />
@@ -289,7 +313,7 @@ const ProductDetailPage = () => {
               {/* Main Image */}
               <div className="flex-1 flex items-center justify-center relative">
                 <img
-                  src={product.images[currentImageIndex]?.image_url}
+                  src={getImageUrl(product.images[currentImageIndex]?.image_path || product.images[currentImageIndex]?.image_url)}
                   alt={`${product.name} - Image ${currentImageIndex + 1}`}
                   className="max-w-full max-h-full object-contain"
                 />
@@ -332,7 +356,7 @@ const ProductDetailPage = () => {
                       }`}
                     >
                       <img
-                        src={image.image_url}
+                        src={getImageUrl(image.image_path || image.image_url)}
                         alt={`${product.name} - Image ${index + 1}`}
                         className="w-full h-full object-cover rounded-lg"
                       />

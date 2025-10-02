@@ -31,14 +31,30 @@ const BannerSlider = () => {
     
     // If img_url is a relative path, construct full URL
     if (banner.img_url) {
-      const fullUrl = `https://sales.primemobilemm.site/api/${banner.img_url}`;
+      // Handle different path formats
+      let cleanPath = banner.img_url;
+      
+      // If it starts with /, remove it to avoid double slashes
+      if (cleanPath.startsWith('/')) {
+        cleanPath = cleanPath.substring(1);
+      }
+      
+      // If it already contains 'assets/img/banners/', use it as is (public path, not API)
+      if (cleanPath.includes('assets/img/banners/')) {
+        const fullUrl = `https://sales.primemobilemm.site/${cleanPath}`;
+        console.log('Constructed URL from img_url:', fullUrl);
+        return fullUrl;
+      }
+      
+      // Otherwise, construct the full path (public path, not API)
+      const fullUrl = `https://sales.primemobilemm.site/assets/img/banners/${cleanPath}`;
       console.log('Constructed URL from img_url:', fullUrl);
       return fullUrl;
     }
     
-    // If only image filename is provided, construct URL
+    // If only image filename is provided, construct URL (public path, not API)
     if (banner.image) {
-      const fullUrl = `https://sales.primemobilemm.site/api/assets/img/banners/${banner.image}`;
+      const fullUrl = `https://sales.primemobilemm.site/assets/img/banners/${banner.image}`;
       console.log('Constructed URL from image:', fullUrl);
       return fullUrl;
     }
