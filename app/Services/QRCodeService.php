@@ -36,7 +36,7 @@ class QRCodeService
      */
     public function generateWarrantyQR(string $customer_id, string $format = 'svg'): string
     {
-        $url = config('app.frontend_url', 'http://localhost:5173') . '/customer/' . $customer_id;
+        $url = config('app.frontend_url', 'https://prime-mobile-topaz.vercel.app') . '/customer/' . $customer_id;
         $format = $this->getBestFormat($format);
         
         $builder = new Builder(
@@ -65,11 +65,11 @@ class QRCodeService
      */
     public function generateWarrantyQRWithLogo(string $customer_id, string $format = 'svg'): string
     {
-        $url = config('app.frontend_url', 'http://localhost:5173') . '/customer/' . $customer_id;
+        $url = config('app.frontend_url', 'https://prime-mobile-topaz.vercel.app') . '/customer/' . $customer_id;
         $format = $this->getBestFormat($format);
         
         // Check if logo exists
-        $logoPath = public_path('assets/img/logo/logo_red.png');
+        $logoPath = public_path('assets/img/logo/logo.jpg');
         $logoResizeToWidth = null;
         if (file_exists($logoPath)) {
             $logoResizeToWidth = 50;
@@ -107,7 +107,7 @@ class QRCodeService
      */
     public function getQRCodeDataUri(string $customer_id, string $format = 'svg'): string
     {
-        $url = config('app.frontend_url', 'http://localhost:5173') . '/customer/' . $customer_id;
+        $url = config('app.frontend_url', 'https://prime-mobile-topaz.vercel.app') . '/customer/' . $customer_id;
         $format = $this->getBestFormat($format);
         
         $builder = new Builder(
@@ -133,7 +133,7 @@ class QRCodeService
      */
     public function generateVoucherQR(string $voucher_code, string $format = 'svg'): string
     {
-        $url = config('app.frontend_url', 'http://localhost:5173') . '/voucher/' . $voucher_code;
+        $url = config('app.frontend_url', 'https://prime-mobile-topaz.vercel.app') . '/voucher/' . $voucher_code;
         $format = $this->getBestFormat($format);
         
         $builder = new Builder(
@@ -162,11 +162,11 @@ class QRCodeService
      */
     public function generateVoucherQRWithLogo(string $voucher_code, string $format = 'svg'): string
     {
-        $url = config('app.frontend_url', 'http://localhost:5173') . '/voucher/' . $voucher_code;
+        $url = config('app.frontend_url', 'https://prime-mobile-topaz.vercel.app') . '/voucher/' . $voucher_code;
         $format = $this->getBestFormat($format);
         
         // Check if logo exists
-        $logoPath = public_path('assets/img/logo/logo_red.png');
+        $logoPath = public_path('assets/img/logo/logo.jpg');
         $logoResizeToWidth = null;
         if (file_exists($logoPath)) {
             $logoResizeToWidth = 50;
