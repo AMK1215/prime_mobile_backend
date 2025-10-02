@@ -73,6 +73,40 @@ class Product extends Model
     }
 
     /**
+     * Get all images for this product.
+     */
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class)->ordered();
+    }
+
+    /**
+     * Get the primary image for this product.
+     */
+    public function primaryImage()
+    {
+        return $this->hasOne(ProductImage::class)->primary();
+    }
+
+    /**
+     * Get the first image URL (for backward compatibility).
+     */
+    public function getImageUrlAttribute(): string
+    {
+        $primaryImage = $this->primaryImage;
+        if ($primaryImage) {
+            return $primaryImage->image_url;
+        }
+        
+        $firstImage = $this->images()->first();
+        if ($firstImage) {
+            return $firstImage->image_url;
+        }
+        
+        return asset('images/no-image.png'); // Default image
+    }
+
+    /**
      * Scope to get only available products.
      */
     public function scopeAvailable($query)

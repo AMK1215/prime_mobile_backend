@@ -133,7 +133,21 @@
                                         <tr>
                                             <td class="text-center align-middle">{{ $loop->iteration }}</td>
                                             <td class="text-center align-middle">
-                                                @if($product->image)
+                                                @if($product->images->count() > 0)
+                                                    <div class="position-relative d-inline-block">
+                                                        <img src="{{ $product->primaryImage ? $product->primaryImage->image_url : $product->images->first()->image_url }}" 
+                                                             alt="{{ $product->name }}" 
+                                                             class="img-thumbnail rounded" 
+                                                             style="width: 60px; height: 60px; object-fit: cover; cursor: pointer;"
+                                                             onclick="viewImageGallery({{ $product->id }}, '{{ $product->name }}')">
+                                                        @if($product->images->count() > 1)
+                                                            <span class="badge badge-info position-absolute" style="top: -5px; right: -5px; font-size: 0.7rem;">
+                                                                +{{ $product->images->count() - 1 }}
+                                                            </span>
+                                                        @endif
+                                                    </div>
+                                                @elseif($product->image)
+                                                    <!-- Legacy single image support -->
                                                     <img src="{{ asset('storage/' . $product->image) }}" 
                                                          alt="{{ $product->name }}" 
                                                          class="img-thumbnail rounded" 
@@ -274,6 +288,28 @@
             </div>
         </div>
     </div>
+
+    <!-- Image Gallery Modal -->
+    <div class="modal fade" id="imageGalleryModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageGalleryTitle">Product Images</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="imageGalleryContent" class="row">
+                        <!-- Images will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('script')
@@ -342,6 +378,44 @@
         $('#previewImage').attr('src', imageUrl);
         $('#previewImage').attr('alt', productName);
         $('#imageModal').modal('show');
+    }
+
+    function viewImageGallery(productId, productName) {
+        $('#imageGalleryTitle').text(productName + ' - Image Gallery');
+        $('#imageGalleryContent').html('<div class="col-12 text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading images...</p></div>');
+        $('#imageGalleryModal').modal('show');
+        
+        // Load product images via AJAX
+        $.ajax({
+            url: `/admin/products/${productId}/images`,
+            method: 'GET',
+            success: function(response) {
+                let galleryHtml = '';
+                if (response.images && response.images.length > 0) {
+                    response.images.forEach(function(image, index) {
+                        galleryHtml += `
+                            <div class="col-md-4 mb-3">
+                                <div class="card">
+                                    <img src="${image.image_url}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="${productName}">
+                                    <div class="card-body p-2">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">Image ${index + 1}</small>
+                                            ${image.is_primary ? '<span class="badge badge-primary">Primary</span>' : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    galleryHtml = '<div class="col-12 text-center"><i class="fas fa-image text-muted fa-3x"></i><p class="text-muted mt-2">No images available</p></div>';
+                }
+                $('#imageGalleryContent').html(galleryHtml);
+            },
+            error: function() {
+                $('#imageGalleryContent').html('<div class="col-12 text-center"><i class="fas fa-exclamation-triangle text-danger fa-3x"></i><p class="text-danger mt-2">Error loading images</p></div>');
+            }
+        });
     }
 </script>
 @endsection

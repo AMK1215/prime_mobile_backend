@@ -31,14 +31,14 @@ const BannerSlider = () => {
     
     // If img_url is a relative path, construct full URL
     if (banner.img_url) {
-      const fullUrl = `https://moneyking77.online${banner.img_url}`;
+      const fullUrl = `https://sales.primemobilemm.site/api/${banner.img_url}`;
       console.log('Constructed URL from img_url:', fullUrl);
       return fullUrl;
     }
     
     // If only image filename is provided, construct URL
     if (banner.image) {
-      const fullUrl = `https://moneyking77.online/assets/img/banners/${banner.image}`;
+      const fullUrl = `https://sales.primemobilemm.site/api/assets/img/banners/${banner.image}`;
       console.log('Constructed URL from image:', fullUrl);
       return fullUrl;
     }

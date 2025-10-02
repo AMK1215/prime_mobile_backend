@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with base configuration
 const api = axios.create({
-  baseURL: 'https://moneyking77.online/api', // Laravel server running on port 8000
+  baseURL: 'https://sales.primemobilemm.site/api', // Laravel server running on port 8000
   timeout: 30000, // Increased timeout to 30 seconds
   headers: {
     'Content-Type': 'application/json',

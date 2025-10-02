@@ -207,25 +207,64 @@
                             </div>
                         </div>
 
-                        <!-- Product Image & Quick Stats -->
+                        <!-- Product Images & Quick Stats -->
                         <div class="col-md-4">
-                            <!-- Product Image -->
+                            <!-- Product Images -->
                             <div class="card" style="border-radius: 20px;">
                                 <div class="card-header">
-                                    <h3 class="card-title">Product Image</h3>
+                                    <h3 class="card-title">Product Images</h3>
                                 </div>
-                                <div class="card-body text-center">
-                                    @if($product->image)
-                                        <img src="{{ asset('storage/' . $product->image) }}" 
-                                             alt="{{ $product->name }}" 
-                                             class="img-fluid rounded" 
-                                             style="max-height: 300px;">
+                                <div class="card-body">
+                                    @if($product->images->count() > 0)
+                                        <!-- Primary Image -->
+                                        <div class="text-center mb-3">
+                                            <img src="{{ $product->primaryImage ? $product->primaryImage->image_url : $product->images->first()->image_url }}" 
+                                                 alt="{{ $product->name }}" 
+                                                 class="img-fluid rounded" 
+                                                 style="max-height: 250px; cursor: pointer;"
+                                                 onclick="openImageGallery()">
+                                        </div>
+                                        
+                                        <!-- Thumbnail Gallery -->
+                                        @if($product->images->count() > 1)
+                                            <div class="row">
+                                                @foreach($product->images->take(4) as $image)
+                                                    <div class="col-3 mb-2">
+                                                        <img src="{{ $image->image_url }}" 
+                                                             alt="{{ $product->name }}" 
+                                                             class="img-thumbnail w-100" 
+                                                             style="height: 60px; object-fit: cover; cursor: pointer;"
+                                                             onclick="openImageGallery({{ $loop->index }})">
+                                                        @if($image->is_primary)
+                                                            <span class="badge badge-primary position-absolute" style="top: -5px; right: -5px; font-size: 0.6rem;">P</span>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                                @if($product->images->count() > 4)
+                                                    <div class="col-3 mb-2">
+                                                        <div class="img-thumbnail w-100 d-flex align-items-center justify-content-center" 
+                                                             style="height: 60px; background: #f8f9fa; cursor: pointer;"
+                                                             onclick="openImageGallery()">
+                                                            <span class="text-muted">+{{ $product->images->count() - 4 }}</span>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @endif
+                                    @elseif($product->image)
+                                        <!-- Legacy single image support -->
+                                        <div class="text-center">
+                                            <img src="{{ asset('storage/' . $product->image) }}" 
+                                                 alt="{{ $product->name }}" 
+                                                 class="img-fluid rounded" 
+                                                 style="max-height: 300px;">
+                                        </div>
                                     @else
                                         <div class="bg-light d-flex align-items-center justify-content-center" 
                                              style="height: 300px;">
                                             <div>
                                                 <i class="fas fa-mobile-alt text-muted" style="font-size: 4rem;"></i>
-                                                <p class="text-muted mt-2">No image available</p>
+                                                <p class="text-muted mt-2">No images available</p>
                                             </div>
                                         </div>
                                     @endif
@@ -321,6 +360,61 @@
             </div>
         </div>
     </div>
+
+    <!-- Image Gallery Modal -->
+    <div class="modal fade" id="imageGalleryModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ $product->name }} - Image Gallery</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="imageGalleryCarousel" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                            @if($product->images->count() > 0)
+                                @foreach($product->images as $index => $image)
+                                    <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                        <img src="{{ $image->image_url }}" class="d-block w-100" style="max-height: 500px; object-fit: contain;" alt="{{ $product->name }}">
+                                        <div class="carousel-caption d-none d-md-block">
+                                            <h5>Image {{ $index + 1 }}</h5>
+                                            @if($image->is_primary)
+                                                <span class="badge badge-primary">Primary Image</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="carousel-item active">
+                                    <div class="d-flex align-items-center justify-content-center" style="height: 400px;">
+                                        <div class="text-center">
+                                            <i class="fas fa-image text-muted" style="font-size: 4rem;"></i>
+                                            <p class="text-muted mt-2">No images available</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                        @if($product->images->count() > 1)
+                            <a class="carousel-control-prev" href="#imageGalleryCarousel" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#imageGalleryCarousel" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        @endif
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('script')
@@ -330,6 +424,17 @@
         $('#newQuantity').val(currentQuantity);
         $('#stockForm').attr('action', '{{ route("admin.products.update-stock", ":id") }}'.replace(':id', productId));
         $('#stockModal').modal('show');
+    }
+
+    function openImageGallery(startIndex = 0) {
+        $('#imageGalleryModal').modal('show');
+        
+        // Set the active slide if startIndex is provided
+        if (startIndex > 0) {
+            setTimeout(() => {
+                $('#imageGalleryCarousel').carousel(startIndex);
+            }, 100);
+        }
     }
 </script>
 @endsection

@@ -102,7 +102,7 @@ const ProductCard = ({ product }) => {
           )}
           
           <img
-            src={product.image_url || (product.image ? `https://moneyking77.online/storage/${product.image}` : 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80')}
+            src={product.image_url || (product.image ? `https://sales.primemobilemm.site/api/${product.image}` : 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80')}
             alt={product.name}
             className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
               imageLoaded ? 'opacity-100' : 'opacity-0'

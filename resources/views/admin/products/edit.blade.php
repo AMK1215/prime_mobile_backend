@@ -114,10 +114,44 @@
                                     </div>
 
                                     <div class="col-md-4">
-                                        <!-- Current Image -->
-                                        @if($product->image)
+                                        <!-- Current Images -->
+                                        @if($product->images->count() > 0)
                                             <div class="form-group">
-                                                <label>Current Image</label>
+                                                <label>Current Images</label>
+                                                <div class="border rounded p-3">
+                                                    <div class="row" id="currentImages">
+                                                        @foreach($product->images as $image)
+                                                            <div class="col-6 mb-2 position-relative" data-image-id="{{ $image->id }}">
+                                                                <img src="{{ $image->image_url }}" 
+                                                                     alt="{{ $product->name }}" 
+                                                                     class="img-thumbnail w-100" 
+                                                                     style="height: 80px; object-fit: cover;">
+                                                                @if($image->is_primary)
+                                                                    <span class="badge badge-primary position-absolute" style="top: -5px; right: -5px;">Primary</span>
+                                                                @endif
+                                                                <div class="btn-group btn-group-sm position-absolute" style="bottom: 5px; right: 5px;">
+                                                                    @if(!$image->is_primary)
+                                                                        <button type="button" class="btn btn-info btn-xs" 
+                                                                                onclick="setPrimaryImage({{ $product->id }}, {{ $image->id }})" 
+                                                                                title="Set as Primary">
+                                                                            <i class="fas fa-star"></i>
+                                                                        </button>
+                                                                    @endif
+                                                                    <button type="button" class="btn btn-danger btn-xs" 
+                                                                            onclick="removeImage({{ $product->id }}, {{ $image->id }})" 
+                                                                            title="Remove Image">
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @elseif($product->image)
+                                            <!-- Legacy single image support -->
+                                            <div class="form-group">
+                                                <label>Current Image (Legacy)</label>
                                                 <div class="border rounded p-3 text-center">
                                                     <img src="{{ asset('storage/' . $product->image) }}" 
                                                          alt="{{ $product->name }}" 
@@ -127,26 +161,31 @@
                                             </div>
                                         @endif
 
-                                        <!-- Image Upload -->
+                                        <!-- Add New Images -->
                                         <div class="form-group">
-                                            <label for="image">Update Product Image</label>
+                                            <label for="images">Add New Images <small class="text-muted">(Up to 10 total)</small></label>
                                             <div class="custom-file">
-                                                <input type="file" class="custom-file-input @error('image') is-invalid @enderror" 
-                                                       id="image" name="image" accept="image/*" onchange="previewImage(this)">
-                                                <label class="custom-file-label" for="image">Choose new file</label>
+                                                <input type="file" class="custom-file-input @error('images.*') is-invalid @enderror" 
+                                                       id="images" name="images[]" accept="image/*" multiple onchange="previewNewImages(this)">
+                                                <label class="custom-file-label" for="images">Choose new files</label>
                                             </div>
-                                            @error('image')
+                                            @error('images.*')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
-                                            <small class="form-text text-muted">Leave empty to keep current image</small>
+                                            @error('images')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <small class="form-text text-muted">
+                                                Supported formats: JPEG, PNG, JPG, GIF, WebP. Max size: 20MB per image.
+                                            </small>
                                         </div>
 
-                                        <!-- Image Preview -->
+                                        <!-- New Images Preview -->
                                         <div class="form-group">
-                                            <label>New Image Preview</label>
-                                            <div id="imagePreview" class="border rounded p-3 text-center" style="min-height: 200px;">
-                                                <i class="fas fa-image text-muted" style="font-size: 3rem;"></i>
-                                                <p class="text-muted mt-2">No new image selected</p>
+                                            <label>New Images Preview</label>
+                                            <div id="newImagePreview" class="border rounded p-3 text-center" style="min-height: 200px;">
+                                                <i class="fas fa-images text-muted" style="font-size: 3rem;"></i>
+                                                <p class="text-muted mt-2">No new images selected</p>
                                             </div>
                                         </div>
 
@@ -198,8 +237,11 @@
 
         // Custom file input
         $('.custom-file-input').on('change', function() {
-            let fileName = $(this).val().split('\\').pop();
-            $(this).next('.custom-file-label').addClass("selected").html(fileName);
+            let files = this.files;
+            if (files.length > 0) {
+                let fileName = files.length === 1 ? files[0].name : files.length + ' files selected';
+                $(this).next('.custom-file-label').addClass("selected").html(fileName);
+            }
         });
 
         // Form submission debugging
@@ -207,28 +249,95 @@
             console.log('Form submitted');
             console.log('Form data:', new FormData(this));
             
-            // Check if image file is selected
-            const imageInput = $('#image')[0];
-            if (imageInput && imageInput.files && imageInput.files[0]) {
-                console.log('Image file selected:', imageInput.files[0]);
-                console.log('File size:', imageInput.files[0].size);
-                console.log('File type:', imageInput.files[0].type);
+            // Check if image files are selected
+            const imageInput = $('#images')[0];
+            if (imageInput && imageInput.files && imageInput.files.length > 0) {
+                console.log('New image files selected:', imageInput.files.length);
+                for (let i = 0; i < imageInput.files.length; i++) {
+                    console.log(`File ${i + 1}:`, imageInput.files[i].name, 'Size:', imageInput.files[i].size);
+                }
             } else {
-                console.log('No image file selected');
+                console.log('No new image files selected');
             }
         });
     });
 
-    function previewImage(input) {
-        if (input.files && input.files[0]) {
-            console.log('Previewing image:', input.files[0]);
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                $('#imagePreview').html('<img src="' + e.target.result + '" class="img-fluid rounded" style="max-height: 200px;">');
+    function previewNewImages(input) {
+        if (input.files && input.files.length > 0) {
+            console.log('Previewing new images:', input.files.length);
+            let previewHtml = '';
+            
+            for (let i = 0; i < input.files.length; i++) {
+                let file = input.files[i];
+                let reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewHtml += `
+                        <div class="position-relative d-inline-block m-1">
+                            <img src="${e.target.result}" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;">
+                            <span class="badge badge-success position-absolute" style="top: -5px; right: -5px;">New</span>
+                        </div>
+                    `;
+                    
+                    // Update preview after all images are loaded
+                    if (i === input.files.length - 1) {
+                        setTimeout(() => {
+                            $('#newImagePreview').html(previewHtml);
+                        }, 100);
+                    }
+                };
+                
+                reader.readAsDataURL(file);
             }
-            reader.readAsDataURL(input.files[0]);
         } else {
-            console.log('No file selected for preview');
+            console.log('No new files selected for preview');
+            $('#newImagePreview').html('<i class="fas fa-images text-muted" style="font-size: 3rem;"></i><p class="text-muted mt-2">No new images selected</p>');
+        }
+    }
+
+    function setPrimaryImage(productId, imageId) {
+        if (confirm('Set this image as primary?')) {
+            $.ajax({
+                url: `/admin/products/${productId}/images/${imageId}/set-primary`,
+                method: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        alert('Error: ' + response.error);
+                    }
+                },
+                error: function() {
+                    alert('Error setting primary image');
+                }
+            });
+        }
+    }
+
+    function removeImage(productId, imageId) {
+        if (confirm('Are you sure you want to remove this image?')) {
+            $.ajax({
+                url: `/admin/products/${productId}/images/${imageId}`,
+                method: 'DELETE',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $(`[data-image-id="${imageId}"]`).fadeOut(300, function() {
+                            $(this).remove();
+                        });
+                    } else {
+                        alert('Error: ' + response.error);
+                    }
+                },
+                error: function() {
+                    alert('Error removing image');
+                }
+            });
         }
     }
 </script>

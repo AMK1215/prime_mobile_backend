@@ -45,6 +45,12 @@ Route::group([
     Route::resource('products', ProductController::class);
     Route::patch('products/{product}/update-stock', [ProductController::class, 'updateStock'])->name('products.update-stock');
     
+    // Product Image Management
+    Route::get('products/{product}/images', [ProductController::class, 'getImages'])->name('products.images');
+    Route::post('products/{product}/images/{image}/set-primary', [ProductController::class, 'setPrimaryImage'])->name('products.images.set-primary');
+    Route::delete('products/{product}/images/{image}', [ProductController::class, 'deleteImage'])->name('products.images.delete');
+    Route::post('products/{product}/images/reorder', [ProductController::class, 'reorderImages'])->name('products.images.reorder');
+    
     // Product Categories Management
     Route::resource('product-categories', ProductCategoryController::class);
 

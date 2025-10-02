@@ -111,25 +111,31 @@
                                     </div>
 
                                     <div class="col-md-4">
-                                        <!-- Image Upload -->
+                                        <!-- Multiple Image Upload -->
                                         <div class="form-group">
-                                            <label for="image">Product Image</label>
+                                            <label for="images">Product Images <small class="text-muted">(Up to 10 images)</small></label>
                                             <div class="custom-file">
-                                                <input type="file" class="custom-file-input @error('image') is-invalid @enderror" 
-                                                       id="image" name="image" accept="image/*" onchange="previewImage(this)">
-                                                <label class="custom-file-label" for="image">Choose file</label>
+                                                <input type="file" class="custom-file-input @error('images.*') is-invalid @enderror" 
+                                                       id="images" name="images[]" accept="image/*" multiple onchange="previewImages(this)">
+                                                <label class="custom-file-label" for="images">Choose multiple files</label>
                                             </div>
-                                            @error('image')
+                                            @error('images.*')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
+                                            @error('images')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <small class="form-text text-muted">
+                                                First image will be set as primary. Supported formats: JPEG, PNG, JPG, GIF, WebP. Max size: 20MB per image.
+                                            </small>
                                         </div>
 
                                         <!-- Image Preview -->
                                         <div class="form-group">
                                             <label>Image Preview</label>
                                             <div id="imagePreview" class="border rounded p-3 text-center" style="min-height: 200px;">
-                                                <i class="fas fa-image text-muted" style="font-size: 3rem;"></i>
-                                                <p class="text-muted mt-2">No image selected</p>
+                                                <i class="fas fa-images text-muted" style="font-size: 3rem;"></i>
+                                                <p class="text-muted mt-2">No images selected</p>
                                             </div>
                                         </div>
 
@@ -185,8 +191,11 @@
 
         // Custom file input
         $('.custom-file-input').on('change', function() {
-            let fileName = $(this).val().split('\\').pop();
-            $(this).next('.custom-file-label').addClass("selected").html(fileName);
+            let files = this.files;
+            if (files.length > 0) {
+                let fileName = files.length === 1 ? files[0].name : files.length + ' files selected';
+                $(this).next('.custom-file-label').addClass("selected").html(fileName);
+            }
         });
 
         // Form submission debugging
@@ -194,28 +203,49 @@
             console.log('Form submitted');
             console.log('Form data:', new FormData(this));
             
-            // Check if image file is selected
-            const imageInput = $('#image')[0];
-            if (imageInput && imageInput.files && imageInput.files[0]) {
-                console.log('Image file selected:', imageInput.files[0]);
-                console.log('File size:', imageInput.files[0].size);
-                console.log('File type:', imageInput.files[0].type);
+            // Check if image files are selected
+            const imageInput = $('#images')[0];
+            if (imageInput && imageInput.files && imageInput.files.length > 0) {
+                console.log('Image files selected:', imageInput.files.length);
+                for (let i = 0; i < imageInput.files.length; i++) {
+                    console.log(`File ${i + 1}:`, imageInput.files[i].name, 'Size:', imageInput.files[i].size);
+                }
             } else {
-                console.log('No image file selected');
+                console.log('No image files selected');
             }
         });
     });
 
-    function previewImage(input) {
-        if (input.files && input.files[0]) {
-            console.log('Previewing image:', input.files[0]);
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                $('#imagePreview').html('<img src="' + e.target.result + '" class="img-fluid rounded" style="max-height: 200px;">');
+    function previewImages(input) {
+        if (input.files && input.files.length > 0) {
+            console.log('Previewing images:', input.files.length);
+            let previewHtml = '';
+            
+            for (let i = 0; i < input.files.length; i++) {
+                let file = input.files[i];
+                let reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewHtml += `
+                        <div class="position-relative d-inline-block m-1">
+                            <img src="${e.target.result}" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;">
+                            ${i === 0 ? '<span class="badge badge-primary position-absolute" style="top: -5px; right: -5px;">Primary</span>' : ''}
+                        </div>
+                    `;
+                    
+                    // Update preview after all images are loaded
+                    if (i === input.files.length - 1) {
+                        setTimeout(() => {
+                            $('#imagePreview').html(previewHtml);
+                        }, 100);
+                    }
+                };
+                
+                reader.readAsDataURL(file);
             }
-            reader.readAsDataURL(input.files[0]);
         } else {
-            console.log('No file selected for preview');
+            console.log('No files selected for preview');
+            $('#imagePreview').html('<i class="fas fa-images text-muted" style="font-size: 3rem;"></i><p class="text-muted mt-2">No images selected</p>');
         }
     }
 
